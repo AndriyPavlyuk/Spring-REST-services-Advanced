@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,6 +60,7 @@ public class BookController {
     }
 
     @GetMapping("{id}")
+    @Cacheable("books")
     public BookModel findById(@PathVariable int id) {
         return bookRepository.findById(id).map(BookModel::new).orElseThrow(() -> new BookNotFoundException(id));
     }
@@ -72,9 +74,10 @@ public class BookController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Book update(@Valid @RequestBody Book book) {
+    @CachePut(cacheNames = "books", key = "#id")
+    public BookModel update(@Valid @RequestBody Book book, @PathVariable int id) {
         bookRepository.save(book);
-        return book;
+        return new BookModel(book);
     }
 
     @GetMapping("orders")
