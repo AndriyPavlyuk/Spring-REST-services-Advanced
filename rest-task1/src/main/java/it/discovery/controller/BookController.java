@@ -3,10 +3,11 @@ package it.discovery.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.cache.annotation.CachePut;
+import javax.cache.annotation.CacheResult;
+import javax.cache.annotation.CacheValue;
 import javax.validation.Valid;
 
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,6 @@ public class BookController {
 
     @GetMapping
     @Timed("books.findAll")
-    @Cacheable(cacheNames = "books")
     public ResponseEntity<List<?>> findAll(@Valid PaginationCriteria paginationCriteria) {
         if (paginationCriteria.getSize() == 0) {
             return ResponseEntity.ok(bookRepository.findAll().stream()
@@ -60,9 +60,10 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    @Cacheable("books")
-    public BookModel findById(@PathVariable int id) {
-        return bookRepository.findById(id).map(BookModel::new).orElseThrow(() -> new BookNotFoundException(id));
+    @CacheResult(cacheName = "books")
+    public BookDTO findById(@PathVariable int id) {
+        return bookRepository.findById(id).map(book -> mapper.map(book, BookDTO.class))
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -74,10 +75,11 @@ public class BookController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CachePut(cacheNames = "books", key = "#id")
-    public BookModel update(@Valid @RequestBody Book book, @PathVariable int id) {
+    @CachePut(cacheName = "books")
+    public BookDTO update(@CacheValue @Valid @RequestBody BookDTO dto, @PathVariable int id) {
+        Book book = mapper.map(dto, Book.class);
         bookRepository.save(book);
-        return new BookModel(book);
+        return mapper.map(book, BookDTO.class);
     }
 
     @GetMapping("orders")

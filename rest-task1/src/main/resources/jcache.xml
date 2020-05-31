@@ -6,7 +6,7 @@
 
 	<cache alias="books">
 		<key-type>java.lang.Integer</key-type>
-		<value-type>it.discovery.model.Book</value-type>
+		<value-type>it.discovery.dto.BookDTO</value-type>
 		<heap unit="entries">200</heap>
 		<heap-store-settings>
 			<max-object-size>2000</max-object-size>
