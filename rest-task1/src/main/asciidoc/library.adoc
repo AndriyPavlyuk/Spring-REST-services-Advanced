@@ -1,0 +1,13 @@
+= Library API documentation
+
+Sergiy Morenets;
+
+Demonstration of how to use Spring REST Docs technology
+
+==== Links
+
+How to send requests:
+include::{snippets}/book-controller-test/find-all_shop-is-not-empty_single-book-returned/curl-request.adoc[]
+
+Response body:
+include::{snippets}/book-controller-test/find-all_shop-is-not-empty_single-book-returned/response-body.adoc[]
