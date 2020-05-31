@@ -62,16 +62,15 @@ public class BookController {
     }
 
     @GetMapping("{id}")
+    //TODO move caching to BookService
     @CacheResult(cacheName = "books")
     @Operation(summary = "Returns book by its identifier", responses = {
             @ApiResponse(description = "Book exists", responseCode = "200"),
             @ApiResponse(description = "Book not found", responseCode = "404")
     })
-
-    public ResponseEntity<BookDTO> findById(@PathVariable int id) {
-        BookDTO bookDTO = bookRepository.findById(id).map(book -> mapper.map(book, BookDTO.class))
+    public BookDTO findById(@PathVariable int id) {
+        return bookRepository.findById(id).map(book -> mapper.map(book, BookDTO.class))
                 .orElseThrow(() -> new BookNotFoundException(id));
-        return ResponseEntity.ok().eTag(bookDTO.getVersion() + "").body(bookDTO);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
