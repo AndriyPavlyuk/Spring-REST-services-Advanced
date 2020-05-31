@@ -8,6 +8,8 @@ import javax.cache.annotation.CacheResult;
 import javax.cache.annotation.CacheValue;
 import javax.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -61,6 +63,10 @@ public class BookController {
 
     @GetMapping("{id}")
     @CacheResult(cacheName = "books")
+    @Operation(summary = "Returns book by its identifier", responses = {
+            @ApiResponse(description = "Book exists", responseCode = "200"),
+            @ApiResponse(description = "Book not found", responseCode = "404")
+    })
     public BookDTO findById(@PathVariable int id) {
         return bookRepository.findById(id).map(book -> mapper.map(book, BookDTO.class))
                 .orElseThrow(() -> new BookNotFoundException(id));
