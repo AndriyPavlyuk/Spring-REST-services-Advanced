@@ -1,7 +1,9 @@
 package it.discovery.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -18,6 +20,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.favorParameter(true);
+    }
+
+    @Bean
+    public ShallowEtagHeaderFilter etagHeaderFilter() {
+        return new ShallowEtagHeaderFilter();
     }
 
     @Override

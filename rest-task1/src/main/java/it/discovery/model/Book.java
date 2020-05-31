@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -45,6 +41,9 @@ public class Book {
 	@JsonIgnore
 	@OneToMany(mappedBy = "book")
 	private List<Order> orders;
+
+	@Version
+	private Integer version;
 
 	public void addOrder(int amount) {
 		if(orders == null) {

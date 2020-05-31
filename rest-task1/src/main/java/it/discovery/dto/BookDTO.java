@@ -29,4 +29,6 @@ public class BookDTO {
     @Min(1800)
     @Schema(name = "Book publishing year", required = false)
     private int year;
+
+    private Integer version;
 }
